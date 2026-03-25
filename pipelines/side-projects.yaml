@@ -11,6 +11,9 @@ sources:
       - startups
       - Entrepreneur
       - microsaas
+      - passive_income
+      - juststart
+      - Affiliatemarketing
     min_score: 5
     max_posts_per_sub: 100
     time_window_hours: 24
