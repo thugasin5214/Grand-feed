@@ -1,0 +1,95 @@
+name: "Amazon Intelligence"
+enabled: false  # Enable after adding NewsAPI key to secrets.yaml
+schedule: "0 14 * * *"  # Daily at 2 PM UTC
+
+sources:
+  - type: reddit
+    subreddits:
+      - amazon
+      - aws
+      - alexa
+      - AmazonFC
+      - cscareerquestions
+      - amazonprime
+      - FulfillmentByAmazon
+    keywords_override:  # Override to focus on Amazon-related content
+      - amazon
+      - amzn
+      - aws
+      - jassy
+      - layoff
+      - bezos
+      - prime
+      - fulfillment
+      - warehouse
+    min_score: 10
+    max_posts_per_sub: 100
+    time_window_hours: 24
+    
+  - type: hackernews
+    feeds:
+      - topstories
+      - newstories
+    keywords_override:  # Focus on Amazon/AWS content
+      - Amazon
+      - AWS
+      - AMZN
+      - Jassy
+      - EC2
+      - S3
+      - Lambda
+    max_items_per_feed: 200
+    time_window_hours: 24
+    min_score: 10
+    
+  - type: newsapi
+    query: "Amazon OR AWS OR AMZN OR \"Andy Jassy\" OR \"Amazon Web Services\""
+    domains: "bloomberg.com,wsj.com,techcrunch.com,reuters.com,cnbc.com,businessinsider.com,theverge.com,arstechnica.com"
+    language: en
+    page_size: 100
+    sort_by: relevancy
+    time_window_hours: 24
+
+processors:
+  keyword_filter:
+    enabled: false  # NewsAPI already filters by query
+    
+  dedup:
+    enabled: true
+    by_id: true
+    by_url: true
+    by_title: true  # Enable title dedup for news
+    lookback_days: 3
+    
+  ai_classifier:
+    enabled: true
+    model: "openai/gpt-3.5-turbo"
+    fallback_model: "openai/gpt-3.5-turbo"
+    focus: "Amazon business intelligence: earnings signals, employee sentiment, product launches, AWS updates, competitive threats"
+    categories:
+      earnings_signal: "Information that could affect AMZN stock price - earnings, guidance, analyst ratings, major deals"
+      employee_sentiment: "Employee experiences, layoffs, culture changes, promotion cycles, return-to-office policies"
+      product_launch: "New AWS service, Amazon product announcement, or significant feature update"
+      competitive: "Competitor activity affecting Amazon - Microsoft Azure, Google Cloud, Walmart, other retailers"
+      regulatory: "Government investigations, antitrust issues, labor relations, regulatory changes"
+      noise: "Not relevant to Amazon business intelligence"
+    extra_instructions: |
+      Extract and highlight:
+      - Any financial figures, percentages, or growth metrics
+      - Specific dates for announcements or launches
+      - Names of executives or key decision makers
+      - Competitor companies mentioned
+      - Geographic regions or markets affected
+    batch_size: 10
+    temperature: 0.3
+
+outputs:
+  - type: email
+    to: "thugasin@yahoo.com"
+    subject_template: "Amazon Intel — {date}"
+    min_items: 3
+    min_relevance: 0.4
+    
+  - type: database
+    table: "items"
+    mark_as_sent: true

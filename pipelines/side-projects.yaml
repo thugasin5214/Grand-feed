@@ -1,0 +1,85 @@
+name: "Side Project Radar"
+enabled: true
+schedule: "0 12 * * *"  # Daily at noon UTC
+
+sources:
+  - type: reddit
+    subreddits: 
+      - SideProject
+      - indiehackers
+      - SaaS
+      - startups
+      - Entrepreneur
+      - microsaas
+    min_score: 5
+    max_posts_per_sub: 100
+    time_window_hours: 24
+    
+  - type: hackernews
+    feeds: 
+      - askstories
+      - showstories
+    max_items_per_feed: 100
+    time_window_hours: 24
+    min_score: 5
+
+processors:
+  keyword_filter:
+    enabled: true
+    include:
+      - pain point
+      - struggling
+      - wish there was
+      - built
+      - launched
+      - side project
+      - saas
+      - mrr
+      - bootstrapped
+      - idea
+      - would pay for
+      - how i
+      - lesson learned
+      - validate
+      - mvp
+      - customers
+      - revenue
+    exclude:
+      - hiring
+      - job posting
+      - resume
+      - looking for work
+      - seeking employment
+      
+  dedup:
+    enabled: true
+    by_id: true
+    by_url: true
+    by_title: false
+    lookback_days: 7
+    
+  ai_classifier:
+    enabled: true
+    model: "openai/gpt-oss-120b:free"
+    fallback_model: "openai/gpt-oss-120b:free"
+    focus: "side projects, startup ideas, and user pain points"
+    categories:
+      pain_point: "User expressing frustration, unmet need, or problem they wish was solved"
+      idea: "Someone sharing a startup or side project idea they want to build"
+      project_launch: "Announcing a new product, service, or significant milestone"
+      lesson_learned: "Sharing experience, advice, or insights from building something"
+      noise: "Off-topic, not related to side projects or startups"
+    extra_instructions: "Focus on identifying concrete problems users are willing to pay to solve, and successful project launches with traction metrics."
+    batch_size: 5
+    temperature: 0.3
+
+outputs:
+  - type: email
+    to: "thugasin@yahoo.com"
+    subject_template: "Side Project Radar — {date}"
+    min_items: 1
+    min_relevance: 0.3
+    
+  - type: database
+    table: "items"
+    mark_as_sent: true

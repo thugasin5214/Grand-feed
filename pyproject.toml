@@ -1,0 +1,109 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "intel-feed"
+version = "1.0.0"
+description = "A generic pipeline-based intelligence feed system"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Feng Li", email = "thugasin@yahoo.com"}
+]
+keywords = [
+    "intelligence",
+    "feed",
+    "pipeline",
+    "reddit",
+    "hackernews",
+    "news",
+    "ai",
+    "classification",
+    "automation"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Communications :: Email"
+]
+
+dependencies = [
+    "requests>=2.31.0",
+    "rich>=13.7.0",
+    "pyyaml>=6.0.1",
+    "jinja2>=3.1.2",
+    "openai>=1.0.0",
+    "python-dotenv>=1.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.7.0",
+    "mypy>=1.5.0",
+    "ruff>=0.1.0"
+]
+sentiment = [
+    "textblob>=0.17.1",
+    "vaderSentiment>=3.3.2"
+]
+scraping = [
+    "beautifulsoup4>=4.12.0",
+    "selenium>=4.15.0"
+]
+
+[project.scripts]
+intel-feed = "scripts.run_pipeline:main"
+intel-feed-all = "scripts.run_all:main"
+
+[project.urls]
+Homepage = "https://github.com/fengli/intel-feed"
+Documentation = "https://github.com/fengli/intel-feed/blob/main/README.md"
+"Bug Tracker" = "https://github.com/fengli/intel-feed/issues"
+
+[tool.setuptools]
+packages = ["intel_feed"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+intel_feed = ["templates/*.html"]
+
+[tool.black]
+line-length = 100
+target-version = ['py39', 'py310', 'py311']
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
