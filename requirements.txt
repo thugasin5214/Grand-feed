@@ -6,6 +6,10 @@ jinja2>=3.1.2
 
 # AI/ML
 openai>=1.0.0
+httpx<0.28.0
+
+# Reddit
+praw>=7.7.1
 
 # Database
 # sqlite3 is included in Python standard library
